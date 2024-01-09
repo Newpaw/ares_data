@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+ares_data.egg-info/
+build/
+dist/
+.env
