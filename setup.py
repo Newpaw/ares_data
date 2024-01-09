@@ -8,7 +8,7 @@ setup(
     description='`ares_data` je Python knihovna pro snadné získávání dat o společnostech z Českého obchodního rejstříku ARES.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='URL vašeho projektu na GitHubu',
+    url='https://github.com/Newpaw/ares_data',
     packages=find_packages(),
     install_requires=[
         'requests'
