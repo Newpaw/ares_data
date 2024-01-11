@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ares_data',
-    version='1.0.0',
+    version='1.0.1',
     author='Jan Novopacký',
     author_email='jan.novopacky@gmail.com',
     description='`ares_data` je Python light weight knihovna pro snadné získávání dat o společnostech z Českého obchodního rejstříku ARES.',
