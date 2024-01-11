@@ -1,17 +1,23 @@
 import csv
 import requests
 import logging
+import pathlib
 
 from dataclasses import dataclass
 from typing import List, Optional
 
-from czso import get_main_cz_nace
+from .czso import get_main_cz_nace
 
 logging.basicConfig(
     format="[%(asctime)s +0000] [%(process)d] [%(levelname)s] %(message)s",
     level=logging.WARNING,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
+
+
+current_directory = pathlib.Path(__file__).parent
+cznace_csv_path = current_directory / "cznace.csv"
+pocet_pracovniku_csv_path = current_directory / "pocet_pracovniku.csv"
 
 
 @dataclass
@@ -160,9 +166,9 @@ def translate_legal_form(legal_form_code: str) -> str:
     return legal_forms.get(legal_form_code, legal_form_code)
 
 
-def find_cznace_description(key, csv_path="ares_data/cznace.csv"):
+def find_cznace_description(key):
     try:
-        with open(csv_path, mode='r', encoding='utf-8-sig') as file:
+        with open(cznace_csv_path, mode='r', encoding='utf-8-sig') as file:
             reader = csv.DictReader(file, delimiter=';')
             for row in reader:
                 if row['id_cznace'] == key:
@@ -170,13 +176,13 @@ def find_cznace_description(key, csv_path="ares_data/cznace.csv"):
             logging.info(f'Žádný popis pro id_cznace: {key} nebyl nalezen.')
             return None
     except Exception as e:
-        logging.error(f'Chyba při načítání nebo vyhledávání v souboru {csv_path}: {e}')
+        logging.error(f'Chyba při načítání nebo vyhledávání v souboru {cznace_csv_path}: {e}')
         return None
 
 
-def find_company_size(chodnota, csv_path="ares_data/pocet_pracovniku.csv"):
+def find_company_size(chodnota):
     try:
-        with open(csv_path, mode='r', encoding='utf-8') as file:
+        with open(pocet_pracovniku_csv_path, mode='r', encoding='utf-8') as file:
             reader = csv.DictReader(file, delimiter=',')
             for row in reader:
                 if row['chodnota'] == chodnota:
@@ -184,12 +190,22 @@ def find_company_size(chodnota, csv_path="ares_data/pocet_pracovniku.csv"):
             logging.info(f'Žádná velikost společnosti pro chodnota: {chodnota} nebyla nalezena.')
             return None
     except Exception as e:
-        logging.error(f'Chyba při načítání nebo vyhledávání v souboru {csv_path}: {e}')
+        logging.error(f'Chyba při načítání nebo vyhledávání v souboru {pocet_pracovniku_csv_path}: {e}')
         return None
 
 
 
 def get_company_data(ico: str, main_cz_nace_important:bool = False) -> Optional[AresCompany] | str:
+    """
+    Retrieves data about a company from the ARES registry using the given ICO (Identification Number of the Organization).
+
+    Args:
+        ico (str): The ICO of the company for which data is to be retrieved.
+        main_cz_nace_important (bool, optional): Flag to indicate if main CZ NACE (main economic activity) is important. Defaults to False.
+
+    Returns:
+        Optional[AresCompany] | str: An AresCompany object with the retrieved company data if successful, a string indicating an error ('IČO is not valid!' if ICO is invalid), or None if the request fails or no records are found.
+    """
 
     if not validation_ico(ico):
         return "IČO is not valid!"

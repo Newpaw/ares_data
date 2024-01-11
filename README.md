@@ -5,7 +5,7 @@
 ## Funkce
 
 - Jednoduché rozhraní pro získávání dat o společnostech podle IČO.
-- Vrací data ve formátu JSON.
+- Jako objekt AresCompany.
 
 ## Instalace
 
@@ -22,20 +22,24 @@ Použití knihovny ares_data je jednoduché. Zde je příklad, jak získat data 
 ```python
 from ares_data import get_company_data
 
-ico = "01220551"
+ico = "60193336"
 company_data = get_company_data(ico)
 print(company_data)
 ```
 
-Tento příklad demonstruje, jak naimportovat a použít funkci get_company_data z knihovny ares_data. Funkce bere jako parametr identifikační číslo organizace (IČO) a vrací data o dané společnosti ve formátu JSON.
+Tento příklad demonstruje, jak naimportovat a použít funkci get_company_data z knihovny ares_data. Funkce bere jako parametr identifikační číslo organizace (IČO). Pokud chcete rozšířit data o hlavní ekonomickou činnost společnosti podle CZNACE, přidejte parametr main_cz_nace_important=True. To však celý proces významně zpomalí, protože dochází k parsování stránky https://apl.czso.cz.
 
-## Chybové stavy 
-
-Pokud dojde k chybě (například neplatné IČO), get_company_data vrátí slovník s informacemi o chybě:
-
-```json
-{
-    "error": "Popis chyby",
-    "details": ...  # Další detaily chyby
-}
+Formát vráceného objektu (pokud není chybový), je:
+```python
+@dataclass
+class AresCompany:
+    ico: str
+    name: Optional[str]
+    address: Optional[str]
+    psc: Optional[str]
+    legal_form: Optional[str]
+    business_fields: Optional[List[str]]
+    size: Optional[str]
+    main_cz_nace: Optional[str] = None
 ```
+
