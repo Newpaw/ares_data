@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ares_data',
-    version='0.1.3',
+    version='0.1.4',
     author='Jan Novopacký',
     author_email='jan.novopacky@gmail.com',
     description='`ares_data` je Python knihovna pro snadné získávání dat o společnostech z Českého obchodního rejstříku ARES.',
@@ -11,7 +11,8 @@ setup(
     url='https://github.com/Newpaw/ares_data',
     packages=find_packages(),
     install_requires=[
-        'requests>=2.25'  # Specifikuje minimální verzi requests
+        'requests>=2.25',  # Specifikuje minimální verzi requests
+        'bs4>=0.0.1'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
